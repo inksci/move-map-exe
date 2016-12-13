@@ -20,8 +20,10 @@ const float pi = 3.14159265358979;
 float	red	= 1.0, blue = 1.0, green = 1.0;
 
 
-float				x_move	= 20.0;
-float				y_move	= 20.0;
+float				x_move	= 0.0;
+float				y_move	= 0.0;
+float x_target=0;
+float y_target=10;
 using namespace std; ofstream	outfile;
 
 /* mouse click */
@@ -39,20 +41,22 @@ void MouseClick( int button, int state, int x, int y )
 	case GLUT_LEFT_BUTTON:
 		if ( state == GLUT_DOWN )
 		{
-			mouse_left_down = 1;
+			//mouse_left_down = 1;
 			mouse_x		= x;
 			mouse_y		= y;
-			;
+			x_move=x;
+			y_move=600-y;
 		}
 		break;
 	case GLUT_MIDDLE_BUTTON:
 	case GLUT_RIGHT_BUTTON:
 		if ( state == GLUT_DOWN )
 		{
-			mouse_right_down	= 1;
+			//mouse_right_down	= 1;
 			mouse_x			= x;
 			mouse_y			= y;
-			;
+			x_target=x;
+			y_target=600-y;
 		}
 		break;
 	default:
@@ -84,19 +88,22 @@ void processNormalKeys( unsigned char key, int x, int y )
 
 void processSpecialKeys( int key, int x, int y )
 {
+	// up down left right: 0 1 2 3
+	int key_control=-1;
 	switch ( key )
 	{
 	case GLUT_KEY_F1: red	= 1.0; green = 0.0; blue = 0.0; break;
 	case GLUT_KEY_F2: red	= 0.0; green = 1.0; blue = 0.0; break;
 	case GLUT_KEY_F3: red	= 0.0; green = 0.0; blue = 1.0; break;
 
-	case GLUT_KEY_UP: y_move	= y_move + 1; break;
-	case GLUT_KEY_DOWN: y_move	= y_move - 1; break;
-	case GLUT_KEY_LEFT: x_move	= x_move - 1; break;
-	case GLUT_KEY_RIGHT: x_move	= x_move + 1; break;
+	case GLUT_KEY_UP: y_move	= y_move + 1; key_control=0; break;
+	case GLUT_KEY_DOWN: y_move	= y_move - 1; key_control=1; break;
+	case GLUT_KEY_LEFT: x_move	= x_move - 1; key_control=2; break;
+	case GLUT_KEY_RIGHT: x_move	= x_move + 1; key_control=3; break;
 	}
-	outfile << "x_move: " << x_move << endl;
-	outfile << "y_move: " << y_move << endl;
+	//outfile << "x_move: " << x_move << endl;
+	//outfile << "y_move: " << y_move << endl;
+	outfile<<"{ ("<<x_target<<","<<y_target<<","<<x_move<<","<<y_move<<"): "<<key_control<<" }"<<endl;
 
 }
 
@@ -183,6 +190,9 @@ void myDisplay( void ) /* plot the sinc function, using world coordinates */
 	glColor3f( 0.0, 1.0, 0.0 );
 	draw_rectangle( x_move, y_move, 10, 10 );
 
+	glColor3f( 1.0, 0.0, 0.0 );
+	draw_rectangle( x_target, y_target, 10, 10 );
+
 	glFlush();
 	glutSwapBuffers();
 }
@@ -224,9 +234,9 @@ void main( int argc, char** argv )
 	glutDisplayFunc( myDisplay );
 	myInit();
 	/* call the function to specify the window */
-	setWindow( 0, 640, 0, 480 );
+	setWindow( 0, 800, 0, 600 );
 	/* call the function to specify the viewport */
-	setViewport( 0, 640, 0, 480 );
+	setViewport( 0, 800, 0, 600 );
 
 	glutIdleFunc( myDisplay ); /* 空闲时调用的函数，即渲染时调用的函数，非常重要 */
 	/* adding here the setting of keyboard processing */
@@ -236,5 +246,3 @@ void main( int argc, char** argv )
 	glutMouseFunc( MouseClick );
 	glutMainLoop();
 }
-
-
