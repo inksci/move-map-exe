@@ -20,10 +20,10 @@ const float pi = 3.14159265358979;
 float	red	= 1.0, blue = 1.0, green = 1.0;
 
 
-float				x_move	= 0.0;
-float				y_move	= 0.0;
-float x_target=0;
-float y_target=10;
+float				x_move	= 548;
+float				y_move	= 149;
+float x_target=509;
+float y_target=442;
 using namespace std; ofstream	outfile;
 
 /* mouse click */
@@ -33,6 +33,24 @@ int	mouse_right_down	= 0;
 int	mouse_right_clicked	= 0;
 int	mouse_x;
 int	mouse_y;
+
+
+
+// reading a text file  
+   #include <iostream>  
+   #include <fstream>  
+   #include <stdlib.h> 
+
+void run_as_load();
+
+
+//切割字符串
+#include <sstream>
+#include <string>
+#include <iostream>
+
+void myDisplay( void );
+
 void MouseClick( int button, int state, int x, int y )
 {
 	outfile << button << ", " << state << ", " << x << ", " << y << endl;
@@ -76,7 +94,7 @@ void processNormalKeys( unsigned char key, int x, int y )
 	switch ( key )
 	{
 	case 'w':
-		cout<<88<<endl;
+		run_as_load();
 		;
 		break;
 
@@ -86,7 +104,42 @@ void processNormalKeys( unsigned char key, int x, int y )
 	}
 }
 
+void run_as_load(){
+	string str_data="";
 
+	// read data from file
+	// move x,y by data
+	char buffer[256];  
+       ifstream in("data_run.txt");  
+       if (! in.is_open())  
+       { cout << "Error opening file"; exit (1); }  
+       while (!in.eof() )  
+       {  
+           in.getline (buffer,100);  
+           //cout << buffer << endl;  
+		   str_data=buffer;
+		   //cout << str_data.c_str() << endl;
+
+		   int x1=atoi(str_data.substr(3,3).c_str());
+		   int y1=atoi(str_data.substr(7,3).c_str());
+		   int x2=atoi(str_data.substr(11,3).c_str());
+		   int y2=atoi(str_data.substr(15,3).c_str());
+		   //int direction=atoi(str_data.substr(21,1).c_str());
+		   cout<<x1<<endl;
+		   cout<<y1<<endl;
+		   cout<<x2<<endl;
+		   cout<<y2<<endl;
+		   //cout<<direction<<endl;
+		   x_target=x1;
+		   y_target=y1;
+		   x_move=x2;
+		   y_move=y2;
+		   //Sleep(50);
+		   myDisplay();
+       } 
+
+	   
+}
 void processSpecialKeys( int key, int x, int y )
 {
 	// up down left right: 0 1 2 3
@@ -131,7 +184,7 @@ void draw_line()
 void open_img()
 {
 	/* 打开文件 */
-	FILE* pfile = fopen( "C:\\Users\\Administrator\\Pictures\\map-1212.bmp", "rb" );
+	FILE* pfile = fopen( "map-1213.bmp", "rb" );
 	if ( pfile == 0 )
 		exit( 0 );
 	/* 读取图像大小 */
